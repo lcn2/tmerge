@@ -2,9 +2,9 @@
 #
 # fmerge - merge one tree into another
 #
-# @(#) $Revision: 1.22 $
-# @(#) $Id: exifrename.pl,v 1.22 2005/07/18 10:01:39 chongo Exp $
-# @(#) $Source: /usr/local/src/cmd/exif/RCS/exifrename.pl,v $
+# @(#) $Revision: 1.1 $
+# @(#) $Id: fmerge.pl,v 1.1 2005/09/03 08:47:47 chongo Exp chongo $
+# @(#) $Source: /Users/chongo/tmp/fmerge/RCS/fmerge.pl,v $
 #
 # Copyright (c) 2005 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -34,7 +34,7 @@
 #
 use strict;
 use bytes;
-use vars qw($opt_v $opt_h $opt_a $opt_f $opt_n);
+use vars qw($opt_v $opt_h $opt_a $opt_f $opt_n $opt_k);
 use Getopt::Long;
 use File::Find;
 no warnings 'File::Find';
@@ -53,15 +53,18 @@ my $srcdir;				# what is being moved
 my $destdir;			# where files are being moved to
 my $destdev;			# device of $destdir
 my $destino;			# inode numner of $destdir
-my $left_behind = 0;		# files left behind under srcdir
+my $left_behind = 0;		# number of files left behind under srcdir
+my $dir_behind = 0;		# number of directies left behind under srcdir
+my $just_rmdir = 0;		# 1 ==> rmdir empty subdirs under srcdir
 
 # usage and help
 #
-my $usage = "$0 [-a] [-f] [-n] [-h] [-v lvl] srcdir destdir";
+my $usage = "$0 [-a] [-f] [-k] [-n] [-h] [-v lvl] srcdir destdir";
 my $help = qq{$usage
 
 	-a	     don't abort/exit after a fatal error (def: do)
 	-f	     force override of existing files (def: don't)
+	-k	     keep empty srcdir subdirs (def: rmdir them)
 	-n	     do not move anything, just print cmds (def: move)
 
 	-h	     print this help message
@@ -72,12 +75,15 @@ my $help = qq{$usage
 
     NOTE:
 	exit 0	all is OK
-	exit >0 some fatal error
+	exit 1	some files were left behind
+	exit 2	some directories were left behind
+	exit >1 some fatal error
 
     Version: $VERSION};
 my %optctl = (
     "a" => \$opt_a,
     "f" => \$opt_f,
+    "k" => \$opt_k,
     "n" => \$opt_n,
     "h" => \$opt_h,
     "v=i" => \$opt_v,
@@ -183,6 +189,19 @@ MAIN: {
 	exit(1);
     }
 
+    # clean out empty srcdir subdirectories unless -c
+    #
+    if (! $opt_k) {
+	$just_rmdir = 1;	# let find_opt know we should remove empty dirs
+	$find_opt{bydepth} = 0;	# walk from bottom up to clean empty dirs
+	find(\%find_opt, $srcdir);
+	if ($dir_behind > 0) {
+	    print STDERR "# $0: left $dir_behind director(ies) " .
+	    		 "behind under $srcdir\n";
+	    exit(2);
+	}
+    }
+
     # all done
     #
     exit(0);
@@ -279,6 +298,21 @@ sub wanted($)
 	# destdir prune
 	print "# DEBUG: at destdir prune #12: $pathname\n" if $opt_v > 2;
 	$File::Find::prune = 1;
+	return;
+    }
+
+    # if we are cleaning out subdirs, just rmdir directories
+    #
+    if ($just_rmdir) {
+	if ($opt_n) {
+	    print "rmdir $pathname\n";
+	} else {
+	    print "rmdir $pathname\n" if $opt_v > 0;
+	    rmdir $pathname if -d $pathname;
+	    if (-d $pathname) {
+		++$dir_behind;
+	    }
+	}
 	return;
     }
 
