@@ -1,10 +1,10 @@
 #!/usr/bin/perl -wT
 #
-# fmerge - merge one tree into another
+# tmerge - merge one tree into another
 #
-# @(#) $Revision: 1.1 $
-# @(#) $Id: fmerge.pl,v 1.1 2005/09/03 08:47:47 chongo Exp chongo $
-# @(#) $Source: /Users/chongo/tmp/fmerge/RCS/fmerge.pl,v $
+# @(#) $Revision: 1.2 $
+# @(#) $Id: tmerge.pl,v 1.2 2005/09/03 09:09:17 chongo Exp chongo $
+# @(#) $Source: /Users/chongo/tmp/tmerge/RCS/tmerge.pl,v $
 #
 # Copyright (c) 2005 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -42,7 +42,7 @@ use File::Copy;
 
 # version - RCS style *and* usable by MakeMaker
 #
-my $VERSION = substr q$Revision: 1.1 $, 10;
+my $VERSION = substr q$Revision: 1.2 $, 10;
 $VERSION =~ s/\s+$//;
 
 # my vars
