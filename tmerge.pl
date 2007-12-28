@@ -2,11 +2,11 @@
 #
 # tmerge - merge one tree into another
 #
-# @(#) $Revision: 1.2 $
-# @(#) $Id: tmerge.pl,v 1.2 2005/09/03 09:09:17 chongo Exp chongo $
-# @(#) $Source: /Users/chongo/tmp/tmerge/RCS/tmerge.pl,v $
+# @(#) $Revision: 1.3 $
+# @(#) $Id: tmerge.pl,v 1.3 2005/09/13 05:23:37 chongo Exp $
+# @(#) $Source: /usr/local/src/cmd/tmerge/RCS/tmerge.pl,v $
 #
-# Copyright (c) 2005 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2005-2007 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -42,13 +42,13 @@ use File::Copy;
 
 # version - RCS style *and* usable by MakeMaker
 #
-my $VERSION = substr q$Revision: 1.2 $, 10;
+my $VERSION = substr q$Revision: 1.3 $, 10;
 $VERSION =~ s/\s+$//;
 
 # my vars
 #
 # NOTE: We will only cd into dirs whose name is only [-+\w\s./] chars
-my $untaint = qr|^([-+\w\s./]+)$|; 	# untainting path pattern
+my $untaint = qr|^([-+\w\s./][-+~\w\s./]*)$|; 	# untainting path pattern
 my $srcdir;				# what is being moved
 my $destdir;			# where files are being moved to
 my $destdev;			# device of $destdir
@@ -92,7 +92,7 @@ my %optctl = (
 
 # function prototypes
 #
-sub wanted();
+sub wanted($);
 
 
 # setup
