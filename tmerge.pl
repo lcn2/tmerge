@@ -77,7 +77,7 @@ my $help = qq{$usage
 	exit 0	all is OK
 	exit 1	some files were left behind
 	exit 2	some directories were left behind
-	exit >1 some fatal error
+	exit >2 some fatal error
 
     Version: $VERSION};
 my %optctl = (
@@ -113,7 +113,7 @@ MAIN: {
     #
     if (!GetOptions(%optctl)) {
 	print STDERR "# $0: invalid command line\nusage:\n\t$help\n";
-	exit(2);
+	exit(3);
     }
     if (defined $opt_h) {
 	# just print help, no error
@@ -122,11 +122,11 @@ MAIN: {
     }
     if (! defined $ARGV[0] || ! defined $ARGV[1]) {
 	print STDERR "# $0: missing args\nusage:\n\t$help\n";
-	exit(3);
+	exit(4);
     }
     if (defined $ARGV[2]) {
 	print STDERR "# $0: too many args\nusage:\n\t$help\n";
-	exit(4);
+	exit(5);
     }
     # canonicalize srcdir removing leading ./'s, multiple //'s, trailing /'s
     $srcdir = $ARGV[0];
@@ -164,13 +164,13 @@ MAIN: {
     	$srcdir = $1;
     } else {
 	print STDERR "# $0: bogus chars in srcdir\n";
-	exit(5);
+	exit(6);
     }
     if ($destdir =~ /$untaint/o) {
     	$destdir = $1;
     } else {
 	print STDERR "# $0: bogus chars in destdir\n";
-	exit(6);
+	exit(7);
     }
 
     # record the device and inode number of $destdir
@@ -178,7 +178,7 @@ MAIN: {
     ($destdev, $destino,) = stat($destdir);
     if (! defined $destdev || ! defined $destdev) {
 	print STDERR "# $0: destdir not found\n";
-	exit(7);
+	exit(8);
     }
 
     # walk the srcdir, making renamed copies and symlinks
@@ -235,13 +235,10 @@ MAIN: {
 #	$File::Find::topdir	top directory path ($srcdir)
 #	$File::Find::topdev	device of the top directory
 #	$File::Find::topino	inode number of the top directory
-#	$adding_readme		0 ==> function being called by find()
-#				!= 0  ==> function being called by add_readme()
 #
 sub wanted($)
 {
     my $filename = $_;		# current filename within $File::Find::dir or
-				# absolute path of readme if $adding_readme!=0
     my $pathname;		# complete path $File::Find::name
     my $nodedev;		# device of the current file
     my $nodeino;		# inode number of the current file
@@ -264,9 +261,9 @@ sub wanted($)
     	$pathname = $1;
     } else {
 	print STDERR "# $0: Fatal: strange chars in pathname \n";
-	print STDERR "# $0: tainted destpath prune #8 $pathname\n";
+	print STDERR "# $0: tainted destpath prune near exit(9) $pathname\n";
 	$File::Find::prune = 1;
-	exit(8) unless defined $opt_a;
+	exit(9) unless defined $opt_a;
 	return;
     }
 
@@ -274,12 +271,12 @@ sub wanted($)
     #
     if ($filename eq ".") {
 	# ignore but do not prune directories
-	print "# DEBUG: . ignore #9 $pathname\n" if $opt_v > 4;
+	print "# DEBUG: . ignore #1 $pathname\n" if $opt_v > 4;
     	return;
     }
     if ($filename eq "..") {
 	# ignore but do not prune directories
-	print "# DEBUG: .. ignore #10 $pathname\n" if $opt_v > 4;
+	print "# DEBUG: .. ignore #2 $pathname\n" if $opt_v > 4;
     	return;
     }
 
@@ -289,14 +286,14 @@ sub wanted($)
     if (! defined $nodedev || ! defined $nodedev) {
 	# skip stat error
 	print STDERR "# $0: Fatal: skipping cannot stat: $filename\n";
-	print STDERR "# $0: stat err prune #11: $pathname\n";
+	print STDERR "# $0: stat err prune near exit(10): $pathname\n";
 	$File::Find::prune = 1;
-	exit(11) unless defined $opt_a;
+	exit(10) unless defined $opt_a;
 	return;
     }
     if ($destdev == $nodedev && $destino == $nodeino) {
 	# destdir prune
-	print "# DEBUG: at destdir prune #12: $pathname\n" if $opt_v > 2;
+	print "# DEBUG: at destdir prune #3: $pathname\n" if $opt_v > 2;
 	$File::Find::prune = 1;
 	return;
     }
@@ -329,9 +326,9 @@ sub wanted($)
     	$destpath = $1;
     } else {
 	print STDERR "# $0: Fatal: strange chars in destpath \n";
-	print STDERR "# $0: tainted destpath prune #13 $destpath\n";
+	print STDERR "# $0: tainted destpath prune near exit(11): $destpath\n";
 	$File::Find::prune = 1;
-	exit(13) unless defined $opt_a;
+	exit(11) unless defined $opt_a;
 	return;
     }
 
@@ -347,9 +344,9 @@ sub wanted($)
 	} else {
 	    # move error
 	    print STDERR "# $0: Fatal: move error: $!\n";
-	    print STDERR "# $0: err #14: mv $pathname $destpath\n";
+	    print STDERR "# $0: err near exit(12): mv $pathname $destpath\n";
 	    $File::Find::prune = 1;
-	    exit(14) unless defined $opt_a;
+	    exit(12) unless defined $opt_a;
 	}
 	return;
     }
@@ -359,7 +356,7 @@ sub wanted($)
     #
     if (-d $destpath) {
 	# ignore but do not prune destination directory that exists
-	print "# DEBUG: dir exist ignore #15: $destpath\n" if $opt_v > 4;
+	print "# DEBUG: dir exist ignore #4: $destpath\n" if $opt_v > 4;
     	return;
     }
 
@@ -375,9 +372,9 @@ sub wanted($)
 	} else {
 	    # move error
 	    print STDERR "# $0: Fatal: move error: $!\n";
-	    print STDERR "# $0: err #16: mv -f $pathname $destpath\n";
+	    print STDERR "# $0: err near exit(13): mv -f $pathname $destpath\n";
 	    $File::Find::prune = 1;
-	    exit(16) unless defined $opt_a;
+	    exit(13) unless defined $opt_a;
 	}
 	return;
     }
