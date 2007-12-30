@@ -68,7 +68,7 @@ my $help = qq{$usage
 	-n	     do not move anything, just print cmds (def: move)
 
 	-h	     print this help message
-	-v 	     verbose / debug level
+	-v lvl 	     verbose / debug level
 
 	srcdir	     source directory from which to merge
 	destdir	     destination directory
@@ -158,7 +158,7 @@ MAIN: {
     $find_opt{untaint_pattern} = $untaint; # untaint pattern
     $find_opt{untaint_skip} = 0; # do not skip any dir that is tainted
 
-    # untaint $srcdir, $destdir, and $rollfile
+    # untaint $srcdir, and $destdir
     #
     if ($srcdir =~ /$untaint/o) {
     	$srcdir = $1;
