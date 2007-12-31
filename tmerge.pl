@@ -138,10 +138,8 @@ MAIN: {
     $destdir =~ s|^(\./+)+||;
     $destdir =~ s|//+|/|g;
     $destdir =~ s|(.)/+$|$1|;
-    if ($opt_v > 1) {
-	print "# DEBUG:";
-	print " -v $opt_v" if $opt_v > 0;
-	print " $srcdir $destdir\n";
+    if ($opt_v > 0) {
+	print "# DEBUG: -v $opt_v $srcdir $destdir\n";
     }
     if ($opt_v > 2) {
 	print "# DEBUG: srcdir: $srcdir\n";
