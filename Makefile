@@ -3,9 +3,9 @@
 #
 # tmerge - merge one tree into another
 #
-# @(#) $Revision$
-# @(#) $Id$
-# @(#) $Source$
+# @(#) $Revision: 1.1 $
+# @(#) $Id: Makefile,v 1.1 2005/09/13 05:31:47 chongo Exp root $
+# @(#) $Source: /usr/local/src/bin/tmerge/RCS/Makefile,v $
 #
 # Copyright (c) 2005 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -34,7 +34,7 @@
 
 SHELL= /bin/sh
 
-TOPNAME= cmd
+TOPNAME= bin
 INSTALL= install
 
 DESTDIR= /usr/local/bin
