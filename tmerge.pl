@@ -2,9 +2,9 @@
 #
 # tmerge - merge one tree into another
 #
-# @(#) $Revision: 1.3 $
-# @(#) $Id: tmerge.pl,v 1.3 2005/09/13 05:23:37 chongo Exp $
-# @(#) $Source: /usr/local/src/cmd/tmerge/RCS/tmerge.pl,v $
+# @(#) $Revision: 1.7 $
+# @(#) $Id: tmerge.pl,v 1.7 2007/12/31 07:02:41 chongo Exp $
+# @(#) $Source: /usr/local/src/bin/tmerge/RCS/tmerge.pl,v $
 #
 # Copyright (c) 2005-2007 by Landon Curt Noll.  All Rights Reserved.
 #
@@ -42,7 +42,7 @@ use File::Copy;
 
 # version - RCS style *and* usable by MakeMaker
 #
-my $VERSION = substr q$Revision: 1.3 $, 10;
+my $VERSION = substr q$Revision: 1.7 $, 10;
 $VERSION =~ s/\s+$//;
 
 # my vars
