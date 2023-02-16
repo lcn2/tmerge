@@ -1,12 +1,8 @@
-#!/usr/bin/perl -wT
+#!/usr/bin/env perl -w
 #
 # tmerge - merge one tree into another
 #
-# @(#) $Revision: 1.7 $
-# @(#) $Id: tmerge.pl,v 1.7 2007/12/31 07:02:41 chongo Exp $
-# @(#) $Source: /usr/local/src/bin/tmerge/RCS/tmerge.pl,v $
-#
-# Copyright (c) 2005-2007 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2005-2007,2023 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
