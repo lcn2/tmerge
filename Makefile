@@ -1,13 +1,8 @@
-#!/bin/make
-# @(#)Makefile	1.2 04 May 1995 02:06:57
+#!/usr/bin/env make
 #
 # tmerge - merge one tree into another
 #
-# @(#) $Revision: 1.2 $
-# @(#) $Id: Makefile,v 1.2 2015/09/06 08:20:16 root Exp $
-# @(#) $Source: /usr/local/src/bin/tmerge/RCS/Makefile,v $
-#
-# Copyright (c) 2005 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2005,2023 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -32,7 +27,10 @@
 # Share and enjoy! :-)
 
 
-SHELL= /bin/sh
+SHELL= bash
+RM= rm
+CP= cp
+CHMOD= chmod
 
 TOPNAME= bin
 INSTALL= install
@@ -44,9 +42,9 @@ TARGETS= tmerge
 all: ${TARGETS}
 
 tmerge: tmerge.pl
-	rm -f $@
-	cp $? $@
-	chmod 0555 $@
+	${RM} -f $@
+	${CP} $? $@
+	${CHMOD} 0555 $@
 
 configure:
 	@echo nothing to configure
@@ -54,7 +52,7 @@ configure:
 clean quick_clean quick_distclean distclean:
 
 clobber quick_clobber: clean
-	rm -f tmerge
+	${RM} -f tmerge
 
 install: all
 	${INSTALL} -m 0555 ${TARGETS} ${DESTDIR}
