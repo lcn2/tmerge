@@ -1,8 +1,8 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 #
 # tmerge - merge one tree into another
 #
-# Copyright (c) 2005-2007,2023 by Landon Curt Noll.  All Rights Reserved.
+# Copyright (c) 2005-2007,2015,2023,2025 by Landon Curt Noll.  All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and
 # its documentation for any purpose and without fee is hereby granted,
@@ -30,16 +30,15 @@
 #
 use strict;
 use bytes;
-use vars qw($opt_v $opt_h $opt_a $opt_f $opt_n $opt_k);
-use Getopt::Long;
+use vars qw($opt_v $opt_V $opt_h $opt_a $opt_f $opt_n $opt_k);
+use Getopt::Long qw(:config no_ignore_case);
 use File::Find;
 no warnings 'File::Find';
 use File::Copy;
 
-# version - RCS style *and* usable by MakeMaker
+# version
 #
-my $VERSION = substr q$Revision: 1.7 $, 10;
-$VERSION =~ s/\s+$//;
+my $VERSION = "1.7.1 2025-03-23";
 
 # my vars
 #
@@ -48,23 +47,25 @@ my $untaint = qr|^([-+\w\s./][-+~\w\s./]*)$|; 	# untainting path pattern
 my $srcdir;				# what is being moved
 my $destdir;			# where files are being moved to
 my $destdev;			# device of $destdir
-my $destino;			# inode numner of $destdir
+my $destino;			# inode number of $destdir
 my $left_behind = 0;		# number of files left behind under srcdir
-my $dir_behind = 0;		# number of directies left behind under srcdir
+my $dir_behind = 0;		# number of directories left behind under srcdir
 my $just_rmdir = 0;		# 1 ==> rmdir empty subdirs under srcdir
 
 # usage and help
 #
-my $usage = "$0 [-a] [-f] [-k] [-n] [-h] [-v lvl] srcdir destdir";
+my $usage = "$0 [-a] [-f] [-k] [-n] [-h] [-v lvl] [-V] srcdir destdir";
 my $help = qq{$usage
+
+	-h	     print this help message
+	-v lvl 	     verbose / debug level
+	-V	     print version and exit
+
+	-n	     do not move anything, just print cmds (def: move)
 
 	-a	     don't abort/exit after a fatal error (def: do)
 	-f	     force override of existing files (def: don't)
 	-k	     keep empty srcdir subdirs (def: rmdir them)
-	-n	     do not move anything, just print cmds (def: move)
-
-	-h	     print this help message
-	-v lvl 	     verbose / debug level
 
 	srcdir	     source directory from which to merge
 	destdir	     destination directory
@@ -75,7 +76,7 @@ my $help = qq{$usage
 	exit 2	some directories were left behind
 	exit >2 some fatal error
 
-    Version: $VERSION};
+Version: $VERSION};
 my %optctl = (
     "a" => \$opt_a,
     "f" => \$opt_f,
@@ -83,6 +84,7 @@ my %optctl = (
     "n" => \$opt_n,
     "h" => \$opt_h,
     "v=i" => \$opt_v,
+    "V" => \$opt_V,
 );
 
 
@@ -114,6 +116,10 @@ MAIN: {
     if (defined $opt_h) {
 	# just print help, no error
 	print STDERR "# $0: usage: $help\n";
+	exit(0);
+    }
+    if (defined $opt_V) {
+	print "$VERSION\n";
 	exit(0);
     }
     if (! defined $ARGV[0] || ! defined $ARGV[1]) {
@@ -307,7 +313,7 @@ sub wanted($)
 	return;
     }
 
-    # determinme the destination name
+    # determine the destination name
     #
     $name = substr($pathname, length($srcdir)+1);
     print "# DEBUG: name: $name\n" if $opt_v > 4;
