@@ -45,4 +45,4 @@ Version: 1.7.1 2025-03-23
 
 # Reporting Security Issues
 
-To report a security issue, please visit "[Reporting Security Issues](https://github.com/lcn2/XXX/security/policy)".
+To report a security issue, please visit "[Reporting Security Issues](https://github.com/lcn2/tmerge/security/policy)".
