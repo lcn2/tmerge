@@ -67,11 +67,6 @@ all: ${TARGETS}
 	${V} echo DEBUG =-= $@ start =-=
 	${V} echo DEBUG =-= $@ end =-=
 
-tmerge: tmerge.pl
-	${RM} -f $@
-	${CP} $? $@
-	${CHMOD} 0555 $@
-
 
 #################################################
 # .PHONY list of rules that do not create files #
@@ -94,7 +89,6 @@ clean:
 
 clobber: clean
 	${V} echo DEBUG =-= $@ start =-=
-	${RM} -f ${TARGETS}
 	${V} echo DEBUG =-= $@ end =-=
 
 install: all
