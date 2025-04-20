@@ -1,6 +1,6 @@
 # tmerge
 
-merge one tree into another
+Merge one tree into another.
 
 
 # To install
@@ -11,11 +11,14 @@ sudo make install clobber
 ```
 
 
-# To use
+# Example
 
 ```sh
-/usr/local/bin/tmerge srcdir destdir
+$ /usr/local/bin/tmerge srcdir destdir
 ```
+
+
+# To use
 
 ```
 /usr/local/bin/tmerge [-a] [-f] [-k] [-n] [-h] [-v lvl] [-V] srcdir destdir
